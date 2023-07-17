@@ -87,7 +87,11 @@ public class AudioHandler extends CordovaPlugin {
 
     protected void getWritePermission(int requestCode)
     {
-        PermissionHelper.requestPermission(this, requestCode, permissions[WRITE_EXTERNAL_STORAGE]);
+        int requestCode = pendingRequests.createRequest(rawArgs, action, callbackContext);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        } else {
+            PermissionHelper.requestPermission(this, requestCode, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
     }
 
 
