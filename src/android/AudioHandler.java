@@ -568,23 +568,33 @@ public class AudioHandler extends CordovaPlugin {
     private void promptForRecord()
     {
         System.out.println("AudiaHandler:: promptForRecord::");
-        if(PermissionHelper.hasPermission(this, permissions[WRITE_EXTERNAL_STORAGE])  &&
-                PermissionHelper.hasPermission(this, permissions[RECORD_AUDIO])) {
-                    System.out.println("AudiaHandler:: promptForRecord::WRITE_EXTERNAL_STORAGE");
-            this.startRecordingAudio(recordId, FileHelper.stripFileProtocol(fileUriStr));
-        }
-        else if(PermissionHelper.hasPermission(this, permissions[RECORD_AUDIO]))
-        {
-            System.out.println("AudiaHandler:: promptForRecord::RECORD_AUDIO");
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= 33) {
+            System.out.println("AudiaHandler:: ANDROID 33::");
+            if (PermissionHelper.hasPermission(this, permissions[RECORD_AUDIO])) {
+                this.startRecordingAudio(recordId, FileHelper.stripFileProtocol(fileUriStr));
             } else {
-                getWritePermission(WRITE_EXTERNAL_STORAGE);
+                getMicPermission(RECORD_AUDIO);
             }
-        }
-        else
-        {
-                        System.out.println("AudiaHandler:: promptForRecord::MIC");
-            getMicPermission(RECORD_AUDIO);
+        } else {
+            //legacy permissions (ANDROID 12 or lower)
+            if(PermissionHelper.hasPermission(this, permissions[WRITE_EXTERNAL_STORAGE])  &&
+                    PermissionHelper.hasPermission(this, permissions[RECORD_AUDIO])) {
+                        System.out.println("AudiaHandler:: promptForRecord::WRITE_EXTERNAL_STORAGE");
+                this.startRecordingAudio(recordId, FileHelper.stripFileProtocol(fileUriStr));
+            }
+            else if(PermissionHelper.hasPermission(this, permissions[RECORD_AUDIO]))
+            {
+                System.out.println("AudiaHandler:: promptForRecord::RECORD_AUDIO");
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                } else {
+                    getWritePermission(WRITE_EXTERNAL_STORAGE);
+                }
+            }
+            else
+            {
+                System.out.println("AudiaHandler:: promptForRecord::MIC");
+                getMicPermission(RECORD_AUDIO);
+            }
         }
 
     }
