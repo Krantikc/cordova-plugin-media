@@ -87,6 +87,7 @@ public class AudioHandler extends CordovaPlugin {
 
     protected void getWritePermission(int requestCode)
     {
+        System.out.println("AudiaHandler:: getWritePermission::");
         int requestCode = pendingRequests.createRequest(rawArgs, action, callbackContext);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         } else {
@@ -566,16 +567,23 @@ public class AudioHandler extends CordovaPlugin {
 
     private void promptForRecord()
     {
+        System.out.println("AudiaHandler:: promptForRecord::");
         if(PermissionHelper.hasPermission(this, permissions[WRITE_EXTERNAL_STORAGE])  &&
                 PermissionHelper.hasPermission(this, permissions[RECORD_AUDIO])) {
+                    System.out.println("AudiaHandler:: promptForRecord::WRITE_EXTERNAL_STORAGE");
             this.startRecordingAudio(recordId, FileHelper.stripFileProtocol(fileUriStr));
         }
         else if(PermissionHelper.hasPermission(this, permissions[RECORD_AUDIO]))
         {
-            getWritePermission(WRITE_EXTERNAL_STORAGE);
+            System.out.println("AudiaHandler:: promptForRecord::RECORD_AUDIO");
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            } else {
+                getWritePermission(WRITE_EXTERNAL_STORAGE);
+            }
         }
         else
         {
+                        System.out.println("AudiaHandler:: promptForRecord::MIC");
             getMicPermission(RECORD_AUDIO);
         }
 
