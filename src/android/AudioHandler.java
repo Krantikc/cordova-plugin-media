@@ -114,6 +114,7 @@ public class AudioHandler extends CordovaPlugin {
         PluginResult.Status status = PluginResult.Status.OK;
         String result = "";
 
+        System.out.println("AudiaHandler:: Action:: " + action);
         if (action.equals("startRecordingAudio")) {
             recordId = args.getString(0);
             String target = args.getString(1);
